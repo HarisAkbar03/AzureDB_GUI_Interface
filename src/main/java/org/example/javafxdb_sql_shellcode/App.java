@@ -1,44 +1,27 @@
 package org.example.javafxdb_sql_shellcode;
 
 import javafx.application.Application;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.util.Scanner;
-import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import org.example.javafxdb_sql_shellcode.db.ConnDbOps;
 
-/**
- * JavaFX App
- */
+import java.io.IOException;
+import java.util.Scanner;
+
 public class App extends Application {
 
-    private static Scene scene;
     private static ConnDbOps cdbop;
-
-    @Override
-    public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-
-        return fxmlLoader.load();
-    }
+    private static Scene scene;
+    private static Stage primaryStage;
+    private FadeTransition fadeIn;
 
     public static void main(String[] args) {
         cdbop = new ConnDbOps();
         Scanner scan = new Scanner(System.in);
-
         char input;
         do {
             System.out.println(" ");
@@ -55,16 +38,14 @@ public class App extends Application {
 
             switch (input) {
                 case 'g':
-                     launch(args); //GUI
+                    launch(); // Launch JavaFX GUI
                     break;
-
                 case 'c':
-                    cdbop.connectToDatabase(); //Your existing method
+                    cdbop.connectToDatabase();
                     break;
                 case 'a':
-                    cdbop.listAllUsers(); //all users in DB
+                    cdbop.listAllUsers();
                     break;
-
                 case 'i':
                     System.out.print("Enter Name: ");
                     String name = scan.next();
@@ -76,12 +57,12 @@ public class App extends Application {
                     String address = scan.next();
                     System.out.print("Enter Password: ");
                     String password = scan.next();
-                    cdbop.insertUser(name, email, phone, address, password); //Your insertUser method
+                    cdbop.insertUser(name, email, phone, address, password);
                     break;
                 case 'q':
                     System.out.print("Enter the name to query: ");
                     String queryName = scan.next();
-                    cdbop.queryUserByName(queryName); //Your queryUserByName method
+                    cdbop.queryUserByName(queryName);
                     break;
                 case 'e':
                     System.out.println("Exiting...");
@@ -93,11 +74,53 @@ public class App extends Application {
         } while (input != 'e');
 
         scan.close();
-
-       
     }
 
+    @Override
+    public void start(Stage stage) {
+        primaryStage = stage;
+        primaryStage.setResizable(false);
+        showSplashScreen();
+    }
 
+    private void showSplashScreen() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("splash_screen.fxml"));
+            Scene scene = new Scene(root, 850, 560);
+            scene.getStylesheets().add(getClass().getResource("styling/style.css").toExternalForm());
+            primaryStage.setScene(scene);
+            primaryStage.show();
+            changeToMainGUI();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void changeToMainGUI() {
+        try {
+            Parent newRoot = FXMLLoader.load(getClass().getResource("db_interface_gui.fxml"));
+            Scene currentScene = primaryStage.getScene();
+            Parent currentRoot = currentScene.getRoot();
 
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(2), currentRoot);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(e -> {
+                newRoot.setOpacity(0);
+                Scene newScene = new Scene(newRoot, 850, 560);
+                newScene.getStylesheets().add(getClass().getResource("styling/style.css").toExternalForm());
+                primaryStage.setScene(newScene);
+                fadeIn.play();
+            });
+
+            fadeOut.play();
+
+            fadeIn = new FadeTransition(Duration.seconds(2), newRoot);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

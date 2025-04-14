@@ -16,10 +16,10 @@ import java.sql.Statement;
  * @author MoaathAlrajab
  */
 public class ConnDbOps {
-    final String MYSQL_SERVER_URL = "jdbc:mysql://localhost/";
-    final String DB_URL = "jdbc:mysql://localhost/DBname";
-    final String USERNAME = "admin";
-    final String PASSWORD = "password";
+    final String MYSQL_SERVER_URL = "jdbc:mysql://csc311haris.mysql.database.azure.com/";
+    public final String DB_URL = MYSQL_SERVER_URL + "dbname";
+    public final String USERNAME = "haris";
+    public final String PASSWORD = "Password1";
     
     public  boolean connectToDatabase() {
         boolean hasRegistredUsers = false;
@@ -30,7 +30,7 @@ public class ConnDbOps {
             //First, connect to MYSQL server and create the database if not created
             Connection conn = DriverManager.getConnection(MYSQL_SERVER_URL, USERNAME, PASSWORD);
             Statement statement = conn.createStatement();
-            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS DBname");
+            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS dbname");
             statement.close();
             conn.close();
 

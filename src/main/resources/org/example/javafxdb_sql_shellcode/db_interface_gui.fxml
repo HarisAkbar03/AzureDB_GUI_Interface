@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="535.0" prefWidth="807.0" xmlns="http://javafx.com/javafx/20.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.javafxdb_sql_shellcode.DB_GUI_Controller">
+
+    <children>
+        <BorderPane prefHeight="535.0" prefWidth="807.0">
+            <top>
+                <MenuBar BorderPane.alignment="CENTER">
+                    <menus>
+                        <Menu text="File">
+                            <items>
+                                <MenuItem text="Close" onAction="#closeApplication"/>
+                            </items>
+                        </Menu>
+                        <Menu text="Edit">
+                            <items>
+                                <MenuItem text="Delete"/>
+                            </items>
+                        </Menu>
+                        <Menu text="About">
+                            <items>
+                                <MenuItem text="About"/>
+                            </items>
+                        </Menu>
+                        <Menu text="Settings">
+                            <items>
+                                <MenuItem text="Close"/>
+                            </items>
+                        </Menu>
+                        <Menu text="Help">
+                            <items>
+                                <MenuItem text="About"/>
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </top>
+
+            <right>
+                <TableView fx:id="tv" prefHeight="501.0" prefWidth="507.0" onMouseClicked="#selectedItemTV"
+                           BorderPane.alignment="CENTER">
+                    <columns>
+                        <TableColumn fx:id="tv_id" text="ID" prefWidth="32.0"/>
+                        <TableColumn fx:id="tv_fn" text="First Name" prefWidth="87.0"/>
+                        <TableColumn fx:id="tv_ln" text="Last Name" prefWidth="83.0"/>
+                        <TableColumn fx:id="tv_dept" text="Department" prefWidth="107.0"/>
+                        <TableColumn fx:id="tv_major" text="Major" prefWidth="46.0"/>
+                        <TableColumn fx:id="tv_major1" text="Course" prefWidth="152.0"/>
+                    </columns>
+                </TableView>
+            </right>
+
+            <left>
+                <VBox prefHeight="264.0" prefWidth="116.0" styleClass="left_pane" BorderPane.alignment="CENTER">
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                            <children>
+                                <ImageView fx:id="img_view" fitHeight="103.0" fitWidth="85.0" layoutX="16.0" layoutY="14.0"
+                                           onMouseClicked="#showImage" pickOnBounds="true" preserveRatio="true"
+                                           styleClass="profile_pic">
+                                    <image>
+                                        <Image url="@images/profile.png"/>
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </VBox>
+            </left>
+
+            <center>
+                <VBox prefHeight="476.0" prefWidth="233.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <TextField fx:id="first_name" promptText="First Name">
+                            <VBox.margin><Insets left="10.0" right="10.0" top="5.0"/></VBox.margin>
+                        </TextField>
+                        <TextField fx:id="last_name" promptText="Last Name">
+                            <VBox.margin><Insets left="10.0" right="10.0" top="5.0"/></VBox.margin>
+                        </TextField>
+                        <TextField fx:id="department" promptText="Department">
+                            <VBox.margin><Insets left="10.0" right="10.0" top="5.0"/></VBox.margin>
+                        </TextField>
+                        <TextField fx:id="major" promptText="Major">
+                            <VBox.margin><Insets left="10.0" right="10.0" top="5.0"/></VBox.margin>
+                        </TextField>
+                        <Button text="Clear" onAction="#clearForm" styleClass="nav_btn">
+                            <VBox.margin><Insets top="10.0" bottom="10.0" left="10.0" right="10.0"/></VBox.margin>
+                        </Button>
+                        <Button fx:id="addBtn" text="Add" onAction="#addNewRecord" styleClass="nav_btn">
+                            <VBox.margin><Insets top="10.0" bottom="10.0" left="10.0" right="10.0"/></VBox.margin>
+                        </Button>
+                        <Button text="Edit" onAction="#editRecord" styleClass="nav_btn">
+                            <VBox.margin><Insets top="10.0" bottom="10.0" left="10.0" right="10.0"/></VBox.margin>
+                        </Button>
+                        <Button text="Delete" onAction="#deleteRecord" styleClass="nav_btn">
+                            <VBox.margin><Insets top="10.0" bottom="10.0" left="10.0" right="10.0"/></VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
+            </center>
+
+            <bottom>
+                <HBox prefHeight="32.0" prefWidth="693.0" styleClass="bottom_pane" BorderPane.alignment="CENTER"/>
+            </bottom>
+        </BorderPane>
+    </children>
+
+    <stylesheets>
+        <URL value="@styling/style.css"/>
+    </stylesheets>
+</AnchorPane>
