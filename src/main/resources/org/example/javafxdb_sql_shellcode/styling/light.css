@@ -1,0 +1,38 @@
+/* light.css */
+.root {
+    -fx-base: white;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-family: "Arial";
+}
+
+.button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+.button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.label {
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+}
+
+.table-view {
+    -fx-background-color: #f9f9f9;
+    -fx-text-fill: black;
+}
+
+.table-cell {
+    -fx-text-fill: black;
+}

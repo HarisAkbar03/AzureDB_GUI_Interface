@@ -1,0 +1,38 @@
+/* dark.css */
+.root {
+    -fx-base: black;
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+}
+
+.button {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+.button:hover {
+    -fx-background-color: #616161;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.table-view {
+    -fx-background-color: #3a3a3a;
+    -fx-text-fill: white;
+}
+
+.table-cell {
+    -fx-text-fill: white;
+}

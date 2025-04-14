@@ -109,7 +109,13 @@
             </center>
 
             <bottom>
-                <HBox prefHeight="32.0" prefWidth="693.0" styleClass="bottom_pane" BorderPane.alignment="CENTER"/>
+                <HBox prefHeight="32.0" prefWidth="693.0" styleClass="bottom_pane" BorderPane.alignment="CENTER"
+                      alignment="CENTER" spacing="20.0">
+                    <children>
+                        <RadioButton fx:id="lightThemeButton" text="Light Theme" onAction="#switchTheme"/>
+                        <RadioButton fx:id="darkThemeButton" text="Dark Theme" onAction="#switchTheme"/>
+                    </children>
+                </HBox>
             </bottom>
         </BorderPane>
     </children>
