@@ -125,9 +125,10 @@ public class DB_GUI_Controller implements Initializable {
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     try (Connection conn = DriverManager.getConnection(dbOps.DB_URL, dbOps.USERNAME, dbOps.PASSWORD)) {
-                        String sql = "DELETE FROM users WHERE id = ?";
+                        // Ensure the query is correctly deleting by name
+                        String sql = "DELETE FROM users WHERE name = ?";
                         PreparedStatement ps = conn.prepareStatement(sql);
-                        ps.setInt(1, selectedPerson.getId());
+                        ps.setString(1, selectedPerson.getFirstName()); // Ensure this is a string field
                         ps.executeUpdate();
                         loadUsersFromDatabase();  // Refresh the table
                     } catch (SQLException e) {
@@ -137,8 +138,6 @@ public class DB_GUI_Controller implements Initializable {
             });
         }
     }
-
-    // Edit a selected record
     @FXML
     protected void editRecord() {
         Person selectedPerson = tv.getSelectionModel().getSelectedItem();
@@ -156,22 +155,34 @@ public class DB_GUI_Controller implements Initializable {
                 return;
             }
 
-            // Update the database record
+            // Search for the person by Last Name
             try (Connection conn = DriverManager.getConnection(dbOps.DB_URL, dbOps.USERNAME, dbOps.PASSWORD)) {
-                String sql = "UPDATE users SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+                String sql = "SELECT * FROM users WHERE Email = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1, updatedName);
-                ps.setString(2, updatedEmail);
-                ps.setString(3, updatedPhone);
-                ps.setString(4, updatedAddress);
-                ps.setInt(5, selectedPerson.getId());
+                ps.setString(1, updatedEmail); // Use last name as a parameter to search
+                ResultSet rs = ps.executeQuery();
 
-                int rowsUpdated = ps.executeUpdate();
-                if (rowsUpdated > 0) {
-                    loadUsersFromDatabase();
-                    clearForm();
+                if (rs.next()) {
+                    int userId = rs.getInt("id");
+
+                    // Update the database record for the found user
+                    String updateSql = "UPDATE users SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+                    PreparedStatement updatePs = conn.prepareStatement(updateSql);
+                    updatePs.setString(1, updatedName);
+                    updatePs.setString(2, updatedEmail);
+                    updatePs.setString(3, updatedPhone);
+                    updatePs.setString(4, updatedAddress);
+                    updatePs.setInt(5, userId);
+
+                    int rowsUpdated = updatePs.executeUpdate();
+                    if (rowsUpdated > 0) {
+                        loadUsersFromDatabase();
+                        clearForm();
+                    } else {
+                        System.out.println("No record found with last name: " + updatedEmail);
+                    }
                 } else {
-                    System.out.println("No record found with ID: " + selectedPerson.getId());
+                    showAlert("Error", "No user found with last name: " + updatedEmail);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -184,7 +195,8 @@ public class DB_GUI_Controller implements Initializable {
     // Handle keypresses for keyboard shortcuts
     private void handleKeyboardShortcuts(KeyEvent event) {
         if (event.isControlDown() && event.getCode() == KeyCode.F) {
-            openFile();
+            // Open the image file chooser dialog
+            showImage();
         } else if (event.isControlDown() && event.getCode() == KeyCode.Q) {
             closeApplication();
         }
