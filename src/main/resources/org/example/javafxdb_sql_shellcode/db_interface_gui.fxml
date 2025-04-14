@@ -54,7 +54,6 @@
                         <TableColumn fx:id="tv_ln" text="Last Name" prefWidth="83.0"/>
                         <TableColumn fx:id="tv_dept" text="Department" prefWidth="107.0"/>
                         <TableColumn fx:id="tv_major" text="Major" prefWidth="46.0"/>
-                        <TableColumn fx:id="tv_major1" text="Course" prefWidth="152.0"/>
                     </columns>
                 </TableView>
             </right>

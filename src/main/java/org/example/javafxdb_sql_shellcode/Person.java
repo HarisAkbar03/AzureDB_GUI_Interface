@@ -1,35 +1,31 @@
 package org.example.javafxdb_sql_shellcode;
 
 public class Person {
-
-
-    private Integer id;
+    private int id;
     private String firstName;
     private String lastName;
     private String dept;
     private String major;
+    private String profilePicture; // Profile picture path
 
-    public Person() {
-    }
-
-
-    public Person(Integer id, String firstName, String lastName, String dept, String major) {
+    // Constructor
+    public Person(int id, String firstName, String lastName, String dept, String major) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.major = major;
         this.dept = dept;
+        this.major = major;
+        this.profilePicture = profilePicture;
     }
 
-
-    public Integer getId() {
+    // Getters and setters
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -39,7 +35,6 @@ public class Person {
         this.firstName = firstName;
     }
 
-
     public String getLastName() {
         return lastName;
     }
@@ -47,16 +42,6 @@ public class Person {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
-
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
-    }
-
 
     public String getDept() {
         return dept;
@@ -66,5 +51,19 @@ public class Person {
         this.dept = dept;
     }
 
+    public String getMajor() {
+        return major;
+    }
 
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 }

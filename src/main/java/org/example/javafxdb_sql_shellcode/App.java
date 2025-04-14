@@ -1,7 +1,7 @@
 package org.example.javafxdb_sql_shellcode;
 
-import javafx.application.Application;
 import javafx.animation.FadeTransition;
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +10,7 @@ import javafx.util.Duration;
 import org.example.javafxdb_sql_shellcode.db.ConnDbOps;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class App extends Application {
@@ -47,17 +48,17 @@ public class App extends Application {
                     cdbop.listAllUsers();
                     break;
                 case 'i':
-                    System.out.print("Enter Name: ");
-                    String name = scan.next();
-                    System.out.print("Enter Email: ");
-                    String email = scan.next();
-                    System.out.print("Enter Phone: ");
-                    String phone = scan.next();
-                    System.out.print("Enter Address: ");
-                    String address = scan.next();
-                    System.out.print("Enter Password: ");
-                    String password = scan.next();
-                    cdbop.insertUser(name, email, phone, address, password);
+                    System.out.print("Enter First Name: ");
+                    String firstName = scan.next();
+                    System.out.print("Enter Last Name: ");
+                    String lastName = scan.next();
+                    System.out.print("Enter Department: ");
+                    String department = scan.next();
+                    System.out.print("Enter Major: ");
+                    String major = scan.next();
+                    System.out.print("Enter Profile Picture (path): ");
+                    String profilePicture = scan.next(); // Assuming user provides path for profile picture
+                    cdbop.insertUser(firstName, lastName, department, major);
                     break;
                 case 'q':
                     System.out.print("Enter the name to query: ");

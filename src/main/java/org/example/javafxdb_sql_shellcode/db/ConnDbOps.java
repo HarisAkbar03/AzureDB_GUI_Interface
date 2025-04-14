@@ -1,151 +1,98 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.example.javafxdb_sql_shellcode.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
-/**
- *
- * @author MoaathAlrajab
- */
 public class ConnDbOps {
+
     final String MYSQL_SERVER_URL = "jdbc:mysql://csc311haris.mysql.database.azure.com/";
-    public final String DB_URL = MYSQL_SERVER_URL + "dbname";
+    public final String DB_URL = MYSQL_SERVER_URL + "AzureShellJava";
     public final String USERNAME = "haris";
-    public final String PASSWORD = "Password1";
-    
-    public  boolean connectToDatabase() {
-        boolean hasRegistredUsers = false;
+    public static final String PASSWORD = "Password1";
 
+    // Connect to the database and create the necessary tables and database if they don't exist
+    public boolean connectToDatabase() {
+        boolean hasRegisteredUsers = false;
 
-        //Class.forName("com.mysql.jdbc.Driver");
         try {
-            //First, connect to MYSQL server and create the database if not created
+            // Connect to MySQL server and create the database if it doesn't exist
             Connection conn = DriverManager.getConnection(MYSQL_SERVER_URL, USERNAME, PASSWORD);
             Statement statement = conn.createStatement();
-            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS dbname");
+            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS AzureShellJava");
             statement.close();
             conn.close();
 
-            //Second, connect to the database and create the table "users" if cot created
-            conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            // Connect to the database and create the "users" table if it doesn't exist
+            conn = DriverManager.getConnection(DB_URL, USERNAME, "Password1");
             statement = conn.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS users ("
-                    + "id INT( 10 ) NOT NULL PRIMARY KEY AUTO_INCREMENT,"
-                    + "name VARCHAR(200) NOT NULL,"
-                    + "email VARCHAR(200) NOT NULL UNIQUE,"
-                    + "phone VARCHAR(200),"
-                    + "address VARCHAR(200),"
-                    + "password VARCHAR(200) NOT NULL"
+                    + "id INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,"
+                    + "first_name VARCHAR(200) NOT NULL,"
+                    + "last_name VARCHAR(200) NOT NULL,"
+                    + "department VARCHAR(200),"
+                    + "major VARCHAR(200)"
                     + ")";
             statement.executeUpdate(sql);
 
-            //check if we have users in the table users
+            // Check if there are registered users in the table
             statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM users");
-
             if (resultSet.next()) {
-                int numUsers = resultSet.getInt(1);
-                if (numUsers > 0) {
-                    hasRegistredUsers = true;
-                }
+                hasRegisteredUsers = resultSet.getInt(1) > 0;
             }
 
             statement.close();
             conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return hasRegistredUsers;
-    }
-
-    public  void queryUserByName(String name) {
-
-
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            String sql = "SELECT * FROM users WHERE name = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, name);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String email = resultSet.getString("email");
-                String phone = resultSet.getString("phone");
-                String address = resultSet.getString("address");
-                System.out.println("ID: " + id + ", Name: " + name + ", Email: " + email + ", Phone: " + phone + ", Address: " + address);
-            }
-
-            preparedStatement.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return hasRegisteredUsers;
     }
 
-    public  void listAllUsers() {
-
-
-
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            String sql = "SELECT * FROM users ";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                String email = resultSet.getString("email");
-                String phone = resultSet.getString("phone");
-                String address = resultSet.getString("address");
-                System.out.println("ID: " + id + ", Name: " + name + ", Email: " + email + ", Phone: " + phone + ", Address: " + address);
+    // Insert a new user into the database
+    public boolean insertUser(String firstName, String lastName, String department, String major) {
+        boolean success = false;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, "Password1")) {
+            String sql = "INSERT INTO users (first_name, last_name, department, major) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, firstName);
+                statement.setString(2, lastName);
+                statement.setString(3, department);
+                statement.setString(4, major);
+                int rowsInserted = statement.executeUpdate();
+                success = rowsInserted > 0;
             }
-
-            preparedStatement.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return success;
     }
 
-    public  void insertUser(String name, String email, String phone, String address, String password) {
-
-
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            String sql = "INSERT INTO users (name, email, phone, address, password) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, email);
-            preparedStatement.setString(3, phone);
-            preparedStatement.setString(4, address);
-            preparedStatement.setString(5, password);
-
-            int row = preparedStatement.executeUpdate();
-
-            if (row > 0) {
-                System.out.println("A new user was inserted successfully.");
+    // Query a user by their first name
+    public boolean queryUserByName(String firstName) {
+        boolean found = false;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, "Password1")) {
+            String sql = "SELECT * FROM users WHERE first_name = ?";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, firstName);
+                ResultSet resultSet = statement.executeQuery();
+                found = resultSet.next();
             }
-
-            preparedStatement.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return found;
     }
 
-    
+    // List all users from the database
+    public ResultSet listAllUsers() {
+        ResultSet resultSet = null;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, "Password1")) {
+            Statement statement = conn.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM users");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultSet;
+    }
 }

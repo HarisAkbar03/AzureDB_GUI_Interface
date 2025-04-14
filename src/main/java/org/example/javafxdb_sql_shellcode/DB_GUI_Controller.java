@@ -40,7 +40,6 @@ public class DB_GUI_Controller implements Initializable {
 
     private boolean isDarkMode = false;
 
-
     private final ObservableList<Person> data = FXCollections.observableArrayList();
     private final ConnDbOps dbOps = new ConnDbOps();
     private Scene scene;
@@ -71,10 +70,10 @@ public class DB_GUI_Controller implements Initializable {
             while (rs.next()) {
                 data.add(new Person(
                         count++,
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("address")
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("department"),
+                        rs.getString("major")
                 ));
             }
             tv.setItems(data);
@@ -90,9 +89,8 @@ public class DB_GUI_Controller implements Initializable {
         String email = last_name.getText();
         String phone = department.getText();
         String address = major.getText();
-        String password = "default123"; // or ask user for password input
-
-        dbOps.insertUser(name, email, phone, address, password);
+        String profilePicture = null;
+        dbOps.insertUser(name, email, phone, address);
         loadUsersFromDatabase();
         clearForm();
     }
@@ -126,9 +124,9 @@ public class DB_GUI_Controller implements Initializable {
                 if (response == ButtonType.OK) {
                     try (Connection conn = DriverManager.getConnection(dbOps.DB_URL, dbOps.USERNAME, dbOps.PASSWORD)) {
                         // Ensure the query is correctly deleting by name
-                        String sql = "DELETE FROM users WHERE name = ?";
+                        String sql = "DELETE FROM users WHERE first_name = ?";
                         PreparedStatement ps = conn.prepareStatement(sql);
-                        ps.setString(1, selectedPerson.getFirstName()); // Ensure this is a string field
+                        ps.setString(1, selectedPerson.getFirstName());
                         ps.executeUpdate();
                         loadUsersFromDatabase();  // Refresh the table
                     } catch (SQLException e) {
@@ -138,6 +136,7 @@ public class DB_GUI_Controller implements Initializable {
             });
         }
     }
+
     @FXML
     protected void editRecord() {
         Person selectedPerson = tv.getSelectionModel().getSelectedItem();
@@ -155,18 +154,18 @@ public class DB_GUI_Controller implements Initializable {
                 return;
             }
 
-            // Search for the person by Last Name
+            // Search for the person by First Name (as an identifier)
             try (Connection conn = DriverManager.getConnection(dbOps.DB_URL, dbOps.USERNAME, dbOps.PASSWORD)) {
-                String sql = "SELECT * FROM users WHERE Email = ?";
+                String sql = "SELECT * FROM users WHERE first_name = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1, updatedEmail); // Use last name as a parameter to search
+                ps.setString(1, updatedName); // Use first name to search
                 ResultSet rs = ps.executeQuery();
 
                 if (rs.next()) {
                     int userId = rs.getInt("id");
 
                     // Update the database record for the found user
-                    String updateSql = "UPDATE users SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+                    String updateSql = "UPDATE users SET first_name = ?, last_name = ?, department = ?, major = ? WHERE id = ?";
                     PreparedStatement updatePs = conn.prepareStatement(updateSql);
                     updatePs.setString(1, updatedName);
                     updatePs.setString(2, updatedEmail);
@@ -179,10 +178,10 @@ public class DB_GUI_Controller implements Initializable {
                         loadUsersFromDatabase();
                         clearForm();
                     } else {
-                        System.out.println("No record found with last name: " + updatedEmail);
+                        System.out.println("No record found with first name: " + updatedName);
                     }
                 } else {
-                    showAlert("Error", "No user found with last name: " + updatedEmail);
+                    showAlert("Error", "No user found with first name: " + updatedName);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -235,7 +234,6 @@ public class DB_GUI_Controller implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     // Show image upload dialog
     @FXML
